@@ -16,4 +16,5 @@ class AppConstants {
   
   //Strings
   static const String appTitle = 'Numio';
+  static const String error = 'Error';
 }
