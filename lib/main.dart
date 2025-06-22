@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/calculator_screen.dart';
 
 void main() {
   runApp(const NumioApp());
@@ -22,14 +23,7 @@ class NumioApp extends StatelessWidget {
           primary: Colors.green,
         ),
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'Welcome to Numio Calculator!',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ),
+      home: CalculatorScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
