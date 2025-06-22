@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/basic_calculator.dart';
 import '../widgets/scientific_calculator.dart';
+import '../widgets/history_tab.dart';
 import '../utils/calculator_logic.dart';
 import '../constants/app_constants.dart';
 
@@ -16,6 +17,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
   String operation = '';
   double operand = 0;
   bool shouldResetDisplay = false;
+  List<String> history = [];
 
   late TabController _tabController;
 
@@ -56,9 +58,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
   void _calculate() {
     try {
       double currentNumber = double.parse(display);
+      String fullEquation = '$operand $operation $currentNumber';
       result = CalculatorLogic.performBasicOperation(operation, operand, currentNumber);
       setState(() {
         display = CalculatorLogic.formatResult(result);
+        history.insert(0, '$fullEquation = ${CalculatorLogic.formatResult(result)}');
+        if (history.length > 50) history.removeLast();
         operation = '';
         shouldResetDisplay = true;
       });
@@ -76,6 +81,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
       result = CalculatorLogic.performScientificOperation(op, currentNumber);
       setState(() {
         display = CalculatorLogic.formatResult(result);
+        history.insert(0, '$op($currentNumber) = ${CalculatorLogic.formatResult(result)}');
+        if (history.length > 50) history.removeLast();
         shouldResetDisplay = true;
       });
     } catch (e) {
@@ -120,6 +127,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
     });
   }
 
+  void _clearHistory() {
+    setState(() {
+      history.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +146,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
               tabs: [
                 Tab(icon: Icon(Icons.calculate), text: AppConstants.basicTab),
                 Tab(icon: Icon(Icons.functions), text: AppConstants.scientificTab),
+                Tab(icon: Icon(Icons.history), text: AppConstants.historyTab),
               ],
             ),
           ),
@@ -158,6 +172,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
                   onDecimalPressed: _onDecimalPressed,
                   onPlusMinusPressed: _onPlusMinusPressed,
                   onCalculate: _calculate,
+                ),
+                HistoryTab(
+                  history: history,
+                  onClearHistory: _clearHistory,
                 ),
               ],
             ),
