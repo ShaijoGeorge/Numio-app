@@ -20,4 +20,8 @@ class AppConstants {
   static const String error = 'Error';
   static const String basicTab = 'Basic';
   static const String scientificTab = 'Scientific';
+  static const String historyTab = 'History';
+  static const String noCalculations = 'No calculations yet';
+  static const String clearAll = 'Clear All';
+  static const String history = 'History';
 }
