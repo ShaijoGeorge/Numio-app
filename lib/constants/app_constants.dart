@@ -5,6 +5,8 @@ class AppConstants {
   static const Color backgroundColor = Colors.black;
   static const Color textColor = Colors.white;
   static const Color buttonColor = Color(0xFF2D2D2D);
+  static const Color operatorColor = Color(0xFF4CAF50);
+  static const Color clearColor = Color(0xFFE53935);
   
   //Sizes
   static const double buttonFontSize = 24.0;
