@@ -13,8 +13,11 @@ class AppConstants {
   static const double buttonPadding = 20.0;
   static const double buttonMargin = 4.0;
   static const double displayFontSize = 48.0;
+  static const double scientificFontSize = 16.0;
   
   //Strings
   static const String appTitle = 'Numio';
   static const String error = 'Error';
+  static const String basicTab = 'Basic';
+  static const String scientificTab = 'Scientific';
 }
