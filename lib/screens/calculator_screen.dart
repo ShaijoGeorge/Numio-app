@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/basic_calculator.dart';
+import '../widgets/scientific_calculator.dart';
 import '../utils/calculator_logic.dart';
 import '../constants/app_constants.dart';
 
@@ -15,6 +16,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
   String operation = '';
   double operand = 0;
   bool shouldResetDisplay = false;
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   void _onNumberPressed(String number) {
     setState(() {
@@ -45,6 +60,22 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
       setState(() {
         display = CalculatorLogic.formatResult(result);
         operation = '';
+        shouldResetDisplay = true;
+      });
+    } catch (e) {
+      setState(() {
+        display = AppConstants.error;
+        shouldResetDisplay = true;
+      });
+    }
+  }
+
+  void _onScientificOperation(String op) {
+    try {
+      double currentNumber = double.parse(display);
+      result = CalculatorLogic.performScientificOperation(op, currentNumber);
+      setState(() {
+        display = CalculatorLogic.formatResult(result);
         shouldResetDisplay = true;
       });
     } catch (e) {
@@ -92,16 +123,47 @@ class _CalculatorScreenState extends State<CalculatorScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BasicCalculator(
-        display: display,
-        onNumberPressed: _onNumberPressed,
-        onOperatorPressed: _onOperatorPressed,
-        onClear: _clear,
-        onDecimalPressed: _onDecimalPressed,
-        onPlusMinusPressed: _onPlusMinusPressed,
-        onCalculate: _calculate,
+      body: Column(
+        children: [
+          Container(
+            color: AppConstants.backgroundColor,
+            child: TabBar(
+              controller: _tabController,
+              indicatorColor: AppConstants.operatorColor,
+              tabs: [
+                Tab(icon: Icon(Icons.calculate), text: AppConstants.basicTab),
+                Tab(icon: Icon(Icons.functions), text: AppConstants.scientificTab),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                BasicCalculator(
+                  display: display,
+                  onNumberPressed: _onNumberPressed,
+                  onOperatorPressed: _onOperatorPressed,
+                  onClear: _clear,
+                  onDecimalPressed: _onDecimalPressed,
+                  onPlusMinusPressed: _onPlusMinusPressed,
+                  onCalculate: _calculate,
+                ),
+                ScientificCalculator(
+                  display: display,
+                  onNumberPressed: _onNumberPressed,
+                  onOperatorPressed: _onOperatorPressed,
+                  onScientificOperation: _onScientificOperation,
+                  onClear: _clear,
+                  onDecimalPressed: _onDecimalPressed,
+                  onPlusMinusPressed: _onPlusMinusPressed,
+                  onCalculate: _calculate,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
-
 }
